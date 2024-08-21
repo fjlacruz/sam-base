@@ -21,8 +21,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Set up AWS SAM CLI
-        uses: aws-actions/setup-sam@v2
+      - name: Set up Python (for SAM CLI)
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'  # SAM CLI necesita Python 3.x para funcionar
+
+      - name: Install AWS SAM CLI manually
+        run: |
+          pip install aws-sam-cli
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
