@@ -16,5 +16,5 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - run: docker run --rm -v $(pwd):/app -w /app node:20 bash -c "npm ci && npm install esbuild --save-dev && npx esbuild --version && pip install aws-sam-cli && sam build --use-container"
+      - run: docker run --rm -v $(pwd):/app -w /app python:3.11-slim bash -c "apt-get update && apt-get install -y npm && npm ci && npm install esbuild --save-dev && npx esbuild --version && pip install aws-sam-cli && sam build --use-container"
       - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
