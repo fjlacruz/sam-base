@@ -15,8 +15,8 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install pip
-        run: sudo apt-get install python3-pip
+      #- name: Install pip
+        #run: sudo apt-get install python3-pip
 
       #- name: Set up AWS SAM CLI
         #run: pip3 install aws-sam-cli
@@ -27,5 +27,5 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - run: docker run --rm -v $(pwd):/app -w /app node:20 bash -c "pip3 install aws-sam-cli && npm ci && npm install esbuild --save-dev && npx esbuild --version && sam build --use-container"
+      - run: docker run --rm -v $(pwd):/app -w /app node:20 bash -c "pip3 install aws-sam-cli && pip3 install aws-sam-cli && npm ci && npm install esbuild --save-dev && npx esbuild --version && sam build --use-container"
       - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
