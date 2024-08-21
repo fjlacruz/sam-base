@@ -1,0 +1,24 @@
+name: Deploy Lambda
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - run: echo "Código del repositorio clonado con éxito."
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+    - run: echo "Node.js 20 configurado correctamente."
