@@ -19,7 +19,7 @@ jobs:
           node-version: '20'  # Ajusta según la versión de Node.js
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci  # npm ci es más rápido y seguro para CI/CD
 
       - name: Set up Python (for SAM CLI)
         uses: actions/setup-python@v3
@@ -27,15 +27,14 @@ jobs:
           python-version: '3.x'  # SAM CLI necesita Python 3.x para funcionar
 
       - name: Install AWS SAM CLI manually
-        run: |
-          pip install aws-sam-cli
+        run: pip install aws-sam-cli
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: us-east-1  # Cambia la región si es necesario
 
       - name: Build SAM application
         run: sam build --use-container
