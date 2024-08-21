@@ -1,0 +1,133 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  sam-base #magic___^_^___line Sample SAM Template for sam-base #magic___^_^___line
+Globals:
+  Function:
+    Timeout: 3
+    Tracing: Active
+    LoggingConfig:
+      LogFormat: JSON
+  Api:
+    TracingEnabled: true
+
+Parameters:
+  stage:
+    Type: String
+    Default: DEV
+    Description: "Stage name for the API Gateway"
+  tableName:
+    Type: String
+    Default: Table_1
+    Description: "Name of the DynamoDB table"
+
+Resources:
+  baseFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "sam-base-baseFunction-${stage}"
+      CodeUri: src/lambdas
+      Environment:
+        Variables:
+          stage: !Ref stage
+          tableName: !Ref tableName
+      Handler: app.lambdaHandler
+      Runtime: nodejs20.x
+      Architectures:
+      - x86_64
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /base
+            Method: get
+            RestApiId: !Ref MyApiGateway
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+        - app.ts
+
+  createItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "sam-base-createItem-${stage}"
+      CodeUri: src/lambdas
+      Environment:
+        Variables:
+          stage: !Ref stage
+          tableName: !Ref tableName
+      Handler: createItem.lambdaHandler
+      Runtime: nodejs20.x
+      Architectures:
+      - x86_64
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /item
+            Method: post
+            RestApiId: !Ref MyApiGateway
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+        - createItem.ts
+
+  MyApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref stage
+      Name: !Sub "sam-base-${stage}"
+      TracingEnabled: true
+
+  ApplicationResourceGroup:
+    Type: AWS::ResourceGroups::Group
+    Properties:
+      Name:
+        Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
+      ResourceQuery:
+        Type: CLOUDFORMATION_STACK_1_0
+
+  ApplicationInsightsMonitoring:
+    Type: AWS::ApplicationInsights::Application
+    Properties:
+      ResourceGroupName:
+        Ref: ApplicationResourceGroup
+
+Outputs:
+  BaseFunctionEndpoint:
+    Description: API Gateway endpoint URL for the baseFunction function (GET /base)
+    Value: !Sub "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/${stage}/base"
+    Export:
+      Name: !Sub "BaseFunctionEndpoint-${stage}"
+
+  CreateItemFunctionEndpoint:
+    Description: API Gateway endpoint URL for the createItemFunction function (POST /item)
+    Value: !Sub "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/${stage}/item"
+    Export:
+      Name: !Sub "CreateItemFunctionEndpoint-${stage}"
+
+  baseFunctionArn:
+    Description: baseFunction Lambda Function ARN
+    Value: !GetAtt baseFunction.Arn
+    Export:
+      Name: !Sub "BaseFunctionArn-${stage}"
+
+  createItemFunctionArn:
+    Description: createItemFunction Lambda Function ARN
+    Value: !GetAtt createItemFunction.Arn
+    Export:
+      Name: !Sub "CreateItemFunctionArn-${stage}"
+
+  baseFunctionIamRole:
+    Description: Implicit IAM Role created for baseFunction function
+    Value: !GetAtt baseFunctionRole.Arn
+    Export:
+      Name: !Sub "BaseFunctionIamRole-${stage}"
