@@ -41,7 +41,7 @@ jobs:
         run: esbuild --version
 
       - name: Build with SAM inside Docker
-        run: docker run --rm -v $(pwd):/app -w /app node:20 bash -c "npm install -g esbuild && npm ci && sam build --use-container"
+        run: docker run --rm -v $(pwd):/app -w /app node:20 bash -c "npm install -g esbuild && npm ci && pip3 install aws-sam-cli && sam build --use-container"
 
       - name: Deploy with SAM
         run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
