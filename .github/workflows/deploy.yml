@@ -40,8 +40,8 @@ jobs:
       - name: Verify esbuild installation
         run: esbuild --version
 
-      - name: Build with SAM
-        run: sam build --use-container
+      - name: Build with SAM inside Docker
+        run: docker run --rm -v $(pwd):/app -w /app node:20 bash -c "npm ci -g esbuild && npm ci && sam build --use-container"
 
       - name: Deploy with SAM
         run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
