@@ -18,5 +18,5 @@ jobs:
           aws-region: us-east-1
       - run: npm install -g esbuild
       - run: esbuild --version
-      - run: sam build --use-container
+      - run: npm run build:cicd
       - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset

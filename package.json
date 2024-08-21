@@ -14,6 +14,7 @@
     "check-coverage": "jest --coverage",
     "doc": "npx typedoc --out documentation src/**/*.ts",
     "build": "npm run compile && sam build",
+    "build:cicd": "sam build --use-container",
     "validate": "sam validate",
     "delete": "sam delete  --no-prompts --config-env dev",
     "deploy":"sam deploy --config-env dev --capabilities CAPABILITY_IAM  --no-confirm-changeset",
