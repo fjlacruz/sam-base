@@ -34,11 +34,11 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
 
-      - name: Install esbuild
-        run: npm install esbuild --save-dev
+      - name: Install esbuild globally
+        run: npm install -g esbuild
 
       - name: Verify esbuild installation
-        run: npx esbuild --version
+        run: esbuild --version
 
       - name: Build with SAM
         run: sam build --use-container
