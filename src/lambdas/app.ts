@@ -10,14 +10,14 @@ import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const stage = process.env.stage;
-    //const table = process.env.tableName;
+    const table = process.env.tableName;
 
     try {
         return {
             statusCode: 200,
             body: JSON.stringify({
                 message: 'sam base',
-                stage
+                table
             }),
         };
     } catch (err) {
