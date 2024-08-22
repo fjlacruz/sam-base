@@ -37,4 +37,4 @@ jobs:
         run: sam build 
 
       - name: Deploy with SAM
-        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+        run: sam deploy --config-env dev --no-confirm-changeset --no-fail-on-empty-changeset
