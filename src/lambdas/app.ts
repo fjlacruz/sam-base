@@ -1,6 +1,4 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import {v4 as uuidv4} from 'uuid';
-
 
 /**
  * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
@@ -12,13 +10,7 @@ import {v4 as uuidv4} from 'uuid';
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const stage = process.env.stage;
-    
 
-    let myuuid = uuidv4();
-
-
-
-    
     if (event.httpMethod !== 'GET') {
         throw new Error(`Only accept GET method, you tried: ${event.httpMethod}`);
     }
