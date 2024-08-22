@@ -18,6 +18,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             body: JSON.stringify({
                 message: 'sam base',
                 stage,
+                test:"test"
             }),
         };
     } catch (err) {
