@@ -133,4 +133,4 @@ Next, you can use AWS Serverless Application Repository to deploy ready to use A
 npm run doc
 ```
 
-documentation out route: http://127.0.0.1:5500/documentation
+Documentation out route: http://127.0.0.1:5500/documentation
