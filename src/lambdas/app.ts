@@ -12,6 +12,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
     const stage = process.env.stage;
     //const table = process.env.tableName;
     console.log(event);
+    console.log(event);
 
     try {
         return {
