@@ -57,7 +57,7 @@ jobs:
         run: npm install -g esbuild
 
       - name: Build with SAM
-        run: sam build
+        run: npm run build
 
   deploy:
     runs-on: ubuntu-latest
