@@ -1,5 +1,5 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { Product } from '../interfaces/create.interface';
+//import { Product } from '../interfaces/create.interface';
 
 /**
  * Lambda function handler for processing API Gateway requests.
