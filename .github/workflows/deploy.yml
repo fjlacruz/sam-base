@@ -8,8 +8,6 @@ on:
 jobs:
   install:
     runs-on: ubuntu-latest
-    outputs:
-      cache-path: ${{ steps.cache.outputs.cache-hit }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -19,21 +17,19 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
-
-      - name: Install esbuild
-        run: npm install -g esbuild
+      - name: Cache npm dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install project dependencies
         run: npm install
 
-      - name: Cache node_modules
-        id: cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+      - name: Install esbuild globally
+        run: npm install -g esbuild
 
   test:
     runs-on: ubuntu-latest
@@ -42,8 +38,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Use cached node_modules
-        run: cp -r ${{ github.workspace }}/../node_modules ./ || echo "No cache"
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install project dependencies (for test job)
+        run: npm ci
 
       - name: Run tests
         run: npm run test
@@ -55,8 +56,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Use cached node_modules
-        run: cp -r ${{ github.workspace }}/../node_modules ./ || echo "No cache"
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Set up SAM CLI
+        uses: aws-actions/setup-sam@v2
+
+      - name: Install esbuild
+        run: npm install -g esbuild
 
       - name: Build with SAM
         run: sam build
@@ -67,6 +76,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Set up SAM CLI
+        uses: aws-actions/setup-sam@v2
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
