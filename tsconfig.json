@@ -11,7 +11,7 @@
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true,  
       "rootDir": "./src",
-      "outDir": ".aws-sam/build/baseFunction/app.js",
+      "outDir": ".aws-sam/build/",
       "types": ["node", "aws-lambda"]
     },
     "include": ["src/**/*.ts"],
