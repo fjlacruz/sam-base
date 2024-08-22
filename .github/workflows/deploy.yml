@@ -31,10 +31,10 @@ jobs:
           aws-region: us-east-1
 
       - name: Install esbuild
-        run: npm install esbuild
+        run: npm install -g esbuild
 
       - name: Build with SAM
-        run: sam build --use-container --build-image public.ecr.aws/sam/build-nodejs20.x:latest
+        run: sam build 
 
       - name: Deploy with SAM
         run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
