@@ -33,6 +33,9 @@ jobs:
       - name: Install esbuild
         run: npm install -g esbuild
 
+      - name: Install project dependencies
+        run: npm install
+        
       - name: Run tests
         run: npm run test
 
