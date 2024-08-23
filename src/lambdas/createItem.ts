@@ -1,68 +1,75 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-// Create a DocumentClient that represents the query to add an item
 import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-
-const client = new DynamoDBClient({ region: 'us-east-1' });
-const ddbDocClient = DynamoDBDocumentClient.from(client);
 import { v4 as uuidv4 } from 'uuid';
-//import { Product } from '../interfaces/create.interface';
+import { productSchema } from '../schemas/productSchema'; // Importa el esquema desde el archivo separado
 
 /**
- * Lambda function handler for processing API Gateway requests.
+ * Initializes a DynamoDB client and Document Client for interacting with DynamoDB.
+ * The DynamoDB Document Client simplifies requests by handling data marshalling.
  *
- * This function handles API Gateway Proxy events, extracts the `stage` environment variable,
- * parses the request body (if provided), and returns a response with the parsed data and
- * current stage. In case of errors, it returns a 500 status code with an error message.
+ * The `ddbDocClient` is used to interact with DynamoDB at a higher abstraction level.
+ */
+const client = new DynamoDBClient({ region: 'us-east-1' });
+const ddbDocClient = DynamoDBDocumentClient.from(client);
+
+/**
+ * AWS Lambda handler for processing incoming API Gateway events and inserting products into DynamoDB.
  *
- * @param {APIGatewayProxyEvent} event - The event object representing the API Gateway Lambda proxy input format.
- * This includes details such as HTTP method, headers, query parameters, and the request body.
+ * La función procesa solicitudes HTTP POST donde el cuerpo debe contener detalles del producto
+ * (`categoryID`, `price`, `title`). Los datos se validan utilizando el esquema de validación definido en
+ * {@link productSchema | productSchema.ts}, y si los datos son válidos, un nuevo producto
+ * se inserta en una tabla de DynamoDB. Cada producto se identifica de manera única con un UUID generado (`productID`).
+ * La respuesta incluye el estado de la operación y cualquier error encontrado.
  *
- * The structure of the `event` can be found here:
- * {@link https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format API Gateway Lambda Proxy Input Format}
+ * El esquema de validación se encuentra en el archivo `productSchema.ts` y se utiliza para asegurar que los
+ * datos del producto cumplan con los requisitos de formato y tipos.
  *
- * @returns {Promise<APIGatewayProxyResult>} A Promise that resolves to the response object
- * for API Gateway, including a status code, headers, and body.
+ * @param {APIGatewayProxyEvent} event - Represents the event object passed by AWS API Gateway.
+ * The event contains HTTP request data such as headers, query parameters, path variables, and the body of the request.
+ * This event is expected to carry a JSON body with product details.
  *
- * The format of the returned response can be found here:
- * {@link https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html API Gateway Lambda Proxy Output Format}
- *
- * @example
- * // Sample event body:
- * // {
- * //   "item": "itemToInsert"
- * // }
- *
- * // Sample response:
- * // {
- * //   "message": "create",
- * //   "data": "itemToInsert",
- * //   "stage": "DEV"
- * // }
+ * @returns {Promise<APIGatewayProxyResult>} - Returns a JSON-formatted response indicating the outcome of the operation.
+ * A status code of `200` means the product was successfully inserted into the DynamoDB table, while a status code of `400` indicates
+ * validation errors, and `500` indicates a server-side error.
  */
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    // Retrieve the stage from environment variables
+    // Retrieve the deployment stage (e.g., "DEV", "PROD") and the DynamoDB table name from environment variables
     const stage = process.env.stage;
-
-    if (event.httpMethod !== 'POST') {
-        throw new Error(`Only accept POST method, you tried: ${event.httpMethod}`);
-    }
+    const table = process.env.tableName;
 
     try {
-        // Parse the request body if available, else set to null
-        //const requestBody = event.body ? JSON.parse(event.body) : null;
-        const table = process.env.tableName;
+        // Parse the request body; defaults to null if no body is provided
+        const requestBody = event.body ? JSON.parse(event.body) : null;
+
+        // Validate the request body using the product schema
+        const { error } = productSchema.validate(requestBody);
+        if (error) {
+            // Return validation errors with status code 400
+            return {
+                statusCode: 400,
+                body: JSON.stringify({
+                    message: 'Input validation error',
+                    details: error.details,
+                }),
+            };
+        }
+
+        // Destructure the product details from the validated request body
+        const { categoryID, price, title } = requestBody;
+        const productID = uuidv4(); // Generate a unique ID for the product
 
         /**
-         * Extract the 'item' from the request body.
-         * If the 'item' key is not provided in the body, defaults to 'defaultItem'.
+         * DynamoDB parameters to insert a new product item.
+         * The product item is stored with a Partition Key (PK) and Sort Key (SK) for efficient lookups,
+         * and secondary indexes are used to query by category, price, and title.
+         *
+         * - `PK`: Partition Key representing the unique product ID.
+         * - `SK`: Sort Key, also based on the product ID.
+         * - `GSI1PK`: Global Secondary Index for querying by `categoryID`.
+         * - `GSI2PK` and `GSI2SK`: Secondary Index for querying by price.
+         * - `GSI3PK` and `GSI3SK`: Secondary Index for querying by title.
          */
-        // const item = requestBody?.item || 'defaultItem';
-
-        const productID = uuidv4();
-        const categoryID = 3;
-        const price = 1300;
-        const title = 'Test2';
         const params = {
             TableName: table,
             Item: {
@@ -77,10 +84,11 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             },
         };
 
+        // Create the DynamoDB PutItem command and send the request to insert the product
         const command = new PutItemCommand(params);
         const response = await ddbDocClient.send(command);
 
-        // Return a successful response with the parsed item and the stage
+        // Return a successful response indicating the product has been inserted
         return {
             statusCode: 200,
             body: JSON.stringify({
@@ -90,14 +98,14 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             }),
         };
     } catch (err) {
-        // Log the error to CloudWatch Logs
+        // Log the error to CloudWatch for further investigation
         console.error('Error processing request:', err);
 
-        // Return an internal server error response
+        // Return a generic 500 error indicating a server-side issue
         return {
             statusCode: 500,
             body: JSON.stringify({
-                message: 'some error happened',
+                message: 'Ocurrió un error en el servidor',
             }),
         };
     }

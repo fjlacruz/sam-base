@@ -10,10 +10,7 @@ import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const stage = process.env.stage;
-
-    if (event.httpMethod !== 'GET') {
-        throw new Error(`Only accept GET method, you tried: ${event.httpMethod}`);
-    }
+    console.log(event);
 
     try {
         return {
