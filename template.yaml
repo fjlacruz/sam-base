@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  sam-base #magic___^_^___line Sample SAM Template for sam-base #magic___^_^___line #magic___^_^___line
+  sam-base #magic___^_^___line Sample SAM Template for sam-base #magic___^_^___line
 Globals:
   Function:
     Timeout: 3
@@ -20,14 +20,6 @@ Parameters:
     Type: String
     Default: Table_1
     Description: "Name of the DynamoDB table"
-  subnetIds:
-    Type: String
-    Default: "subnet-0059e1bccbecd0a26,subnet-0286b26d4bb9f3594,subnet-0469d8439f9d33734,subnet-04fb9d01f0852496d,subnet-082dcdeb507257f0d,subnet-09f437a2d5ba17318"
-    Description: "Comma-separated list of subnet IDs for the Lambda functions"
-  securityGroupIds:
-    Type: String
-    Default: "sg-05aae970e0053b1a2"
-    Description: "Comma-separated list of security group IDs for the Lambda functions"
 
 Resources:
   baseFunction:
@@ -45,9 +37,6 @@ Resources:
       Timeout: 15
       Architectures:
       - x86_64
-      VpcConfig:
-        SecurityGroupIds: !Split [",", !Ref securityGroupIds]
-        SubnetIds: !Split [",", !Ref subnetIds]
       Events:
         Api:
           Type: Api
@@ -82,9 +71,6 @@ Resources:
       Timeout: 10
       Architectures:
       - x86_64
-      VpcConfig:
-        SecurityGroupIds: !Split [",", !Ref securityGroupIds]
-        SubnetIds: !Split [",", !Ref subnetIds]
       Events:
         Api:
           Type: Api
@@ -176,7 +162,7 @@ Resources:
         BurstLimit: 200 # Límite de solicitudes instantáneas
         RateLimit: 100 # Límite de solicitudes por segundo
       Quota:
-        Limit: 1000 # Límite de solicitudes por mes
+        Limit: 10000 # Límite de solicitudes por mes
         Period: MONTH
 
   ApplicationResourceGroup:
