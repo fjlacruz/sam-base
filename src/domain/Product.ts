@@ -10,10 +10,5 @@ export class Product {
      * @param {number} price - El precio del producto.
      * @param {string} title - El título o nombre del producto.
      */
-    constructor(
-        public productID: string,
-        public categoryID: string,
-        public price: number,
-        public title: string
-    ) {}
+    constructor(public productID: string, public categoryID: string, public price: number, public title: string) {}
 }
