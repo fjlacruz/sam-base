@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  sam-base #magic___^_^___line Sample SAM Template for sam-base #magic___^_^___line #magic___^_^___line
+  sam-base #magic___^_^___line Sample SAM Template for sam-base #magic___^_^___line #magic___^_^___line #magic___^_^___line
 Globals:
   Function:
     Timeout: 3
@@ -46,8 +46,8 @@ Resources:
       Architectures:
       - x86_64
       VpcConfig:
-        SecurityGroupIds: !Split [",", !Ref securityGroupIds]
-        SubnetIds: !Split [",", !Ref subnetIds]
+        SecurityGroupIds: !Split [",", !Ref securityGroupIds] # Usa los grupos de seguridad especificados
+        SubnetIds: !Split [",", !Ref subnetIds] # Usa las subredes especificadas
       Events:
         Api:
           Type: Api
@@ -164,7 +164,7 @@ Resources:
       Name: !Sub "sam-base-${stage}"
       TracingEnabled: true
       Auth:
-        ApiKeyRequired: false # Ajuste para deshabilitar la necesidad de API Key
+        ApiKeyRequired: false # Deshabilitar API Key
 
   MyUsagePlan:
     Type: AWS::ApiGateway::UsagePlan
@@ -173,25 +173,11 @@ Resources:
       - ApiId: !Ref MyApiGateway
         Stage: !Ref stage
       Throttle:
-        BurstLimit: 200 # Límite de solicitudes instantáneas
-        RateLimit: 100 # Límite de solicitudes por segundo
+        BurstLimit: 200
+        RateLimit: 100
       Quota:
-        Limit: 1000 # Límite de solicitudes por mes
+        Limit: 1000
         Period: MONTH
-
-  ApplicationResourceGroup:
-    Type: AWS::ResourceGroups::Group
-    Properties:
-      Name:
-        Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
-      ResourceQuery:
-        Type: CLOUDFORMATION_STACK_1_0
-
-  ApplicationInsightsMonitoring:
-    Type: AWS::ApplicationInsights::Application
-    Properties:
-      ResourceGroupName:
-        Ref: ApplicationResourceGroup
 
 Outputs:
   BaseFunctionEndpoint:
@@ -205,21 +191,3 @@ Outputs:
     Value: !Sub "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/${stage}/item"
     Export:
       Name: !Sub "CreateItemFunctionEndpoint-${stage}"
-
-  baseFunctionArn:
-    Description: baseFunction Lambda Function ARN
-    Value: !GetAtt baseFunction.Arn
-    Export:
-      Name: !Sub "BaseFunctionArn-${stage}"
-
-  createItemFunctionArn:
-    Description: createItemFunction Lambda Function ARN
-    Value: !GetAtt createItemFunction.Arn
-    Export:
-      Name: !Sub "CreateItemFunctionArn-${stage}"
-
-  baseFunctionIamRole:
-    Description: Implicit IAM Role created for baseFunction function
-    Value: !GetAtt baseFunctionRole.Arn
-    Export:
-      Name: !Sub "BaseFunctionIamRole-${stage}"
