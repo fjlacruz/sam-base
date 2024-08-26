@@ -1,4 +1,4 @@
-import type { Product } from '../domain/Product';
+import  { Product } from '../domain/Product';
 
 /**
  * Interfaz que define las operaciones básicas para manejar productos en un repositorio.

@@ -1,6 +1,6 @@
-import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import  { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { DynamoDBProductRepository } from '../adapters/DynamoDBProductRepository';
-import type { Product } from '../domain/Product';
+import  { Product } from '../domain/Product';
 
 const productRepository = new DynamoDBProductRepository();
 
