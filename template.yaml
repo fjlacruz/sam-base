@@ -149,6 +149,21 @@ Resources:
       StageName: !Ref stage
       Name: !Sub "sam-base-${stage}"
       TracingEnabled: true
+      Auth:
+        ApiKeyRequired: false # Ajuste para deshabilitar la necesidad de API Key
+
+  MyUsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    Properties:
+      ApiStages:
+      - ApiId: !Ref MyApiGateway
+        Stage: !Ref stage
+      Throttle:
+        BurstLimit: 200 # Límite de solicitudes instantáneas
+        RateLimit: 100 # Límite de solicitudes por segundo
+      Quota:
+        Limit: 1000 # Límite de solicitudes por mes
+        Period: MONTH
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
