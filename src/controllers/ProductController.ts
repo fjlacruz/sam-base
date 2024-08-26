@@ -1,4 +1,4 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import  { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { v4 as uuidv4 } from 'uuid';
 import { productSchema } from '../schemas/productSchema';
 import { DynamoDBProductRepository } from '../adapters/DynamoDBProductRepository';

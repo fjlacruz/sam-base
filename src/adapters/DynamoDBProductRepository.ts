@@ -1,7 +1,7 @@
 import { DynamoDBClient, PutItemCommand, ScanCommand } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import { ProductRepository } from '../ports/ProductRepository';
-import { Product } from '../domain/Product';
+import  { ProductRepository } from '../ports/ProductRepository';
+import  { Product } from '../domain/Product';
 
 /**
  * Repositorio de productos que utiliza DynamoDB como base de datos.
