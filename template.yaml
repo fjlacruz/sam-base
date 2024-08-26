@@ -26,15 +26,15 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub "sam-base-baseFunction-${stage}"
-      CodeUri: src/lambdas
+      CodeUri: src/controllers
       Environment:
         Variables:
           stage: !Ref stage
           tableName: !Ref tableName
-      Handler: app.lambdaHandler
+      Handler: getAllController.lambdaHandler
       Runtime: nodejs20.x
       MemorySize: 256
-      Timeout: 6
+      Timeout: 15
       Architectures:
       - x86_64
       Events:
@@ -54,18 +54,18 @@ Resources:
         Target: es2020
         Sourcemap: true
         EntryPoints:
-        - app.ts
+        - getAllController.ts
 
   createItemFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub "sam-base-createItem-${stage}"
-      CodeUri: src/lambdas
+      CodeUri: src/controllers
       Environment:
         Variables:
           stage: !Ref stage
           tableName: !Ref tableName
-      Handler: createItem.lambdaHandler
+      Handler: ProductController.lambdaHandler
       Runtime: nodejs20.x
       MemorySize: 256
       Timeout: 10
@@ -88,7 +88,7 @@ Resources:
         Target: es2020
         Sourcemap: true
         EntryPoints:
-        - createItem.ts
+        - ProductController.ts
 
   DynamoDBTable:
     Type: "AWS::DynamoDB::Table"
