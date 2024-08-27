@@ -43,7 +43,7 @@ Resources:
           Properties:
             Path: /base
             Method: get
-            RestApiId: !Ref ApiGateway
+            RestApiId: !Ref MyApiGateway
       Policies:
       - DynamoDBCrudPolicy:
           TableName: !Ref DynamoDBTable
@@ -77,7 +77,7 @@ Resources:
           Properties:
             Path: /item
             Method: post
-            RestApiId: !Ref ApiGateway
+            RestApiId: !Ref MyApiGateway
       Policies:
       - DynamoDBCrudPolicy:
           TableName: !Ref DynamoDBTable
@@ -143,7 +143,7 @@ Resources:
         Projection:
           ProjectionType: ALL
 
-  ApiGateway:
+  MyApiGateway:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref stage
@@ -152,11 +152,11 @@ Resources:
       Auth:
         ApiKeyRequired: false # Ajuste para deshabilitar la necesidad de API Key
 
-  UsagePlan:
+  MyUsagePlan:
     Type: AWS::ApiGateway::UsagePlan
     Properties:
       ApiStages:
-      - ApiId: !Ref ApiGateway
+      - ApiId: !Ref MyApiGateway
         Stage: !Ref stage
       Throttle:
         BurstLimit: 200 # Límite de solicitudes instantáneas
@@ -182,13 +182,13 @@ Resources:
 Outputs:
   BaseFunctionEndpoint:
     Description: API Gateway endpoint URL for the baseFunction function (GET /base)
-    Value: !Sub "https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/${stage}/base"
+    Value: !Sub "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/${stage}/base"
     Export:
       Name: !Sub "BaseFunctionEndpoint-${stage}"
 
   CreateItemFunctionEndpoint:
     Description: API Gateway endpoint URL for the createItemFunction function (POST /item)
-    Value: !Sub "https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/${stage}/item"
+    Value: !Sub "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/${stage}/item"
     Export:
       Name: !Sub "CreateItemFunctionEndpoint-${stage}"
 
