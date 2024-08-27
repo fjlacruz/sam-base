@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  sam-base #magic___^_^___line Sample SAM Template for sam-base #magic___^_^___line
+  sam-base-ms #magic___^_^___line Sample SAM Template for sam-base-ms #magic___^_^___line
 Globals:
   Function:
     Timeout: 3
@@ -25,7 +25,7 @@ Resources:
   baseFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub "sam-base-baseFunction-${stage}"
+      FunctionName: !Sub "sam-base-ms-baseFunction-${stage}"
       CodeUri: src/controllers
       Environment:
         Variables:
@@ -59,7 +59,7 @@ Resources:
   createItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub "sam-base-createItem-${stage}"
+      FunctionName: !Sub "sam-base-ms-createItem-${stage}"
       CodeUri: src/controllers
       Environment:
         Variables:
@@ -147,7 +147,7 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref stage
-      Name: !Sub "sam-base-${stage}"
+      Name: !Sub "sam-base-ms-${stage}"
       TracingEnabled: true
       Auth:
         ApiKeyRequired: false # Ajuste para deshabilitar la necesidad de API Key
