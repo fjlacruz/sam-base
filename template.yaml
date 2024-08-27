@@ -91,7 +91,7 @@ Resources:
         - ProductController.ts
 
   DynamoDBTable:
-    Type: AWS::DynamoDB::GlobalTable
+    Type: "AWS::DynamoDB::Table"
     Properties:
       TableName: !Ref tableName
       AttributeDefinitions:
@@ -117,9 +117,6 @@ Resources:
       - AttributeName: "SK"
         KeyType: "RANGE"
       BillingMode: "PAY_PER_REQUEST"
-      Replicas:
-      - Region: !Ref "AWS::Region" # Región principal (ej. us-east-1)
-      - Region: sa-east-1 # Región de réplica
       GlobalSecondaryIndexes:
       - IndexName: 'GSI1'
         KeySchema:
