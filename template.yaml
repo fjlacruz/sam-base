@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  sam-base-ms #magic___^_^___line Sample SAM Template for sam-base-ms #magic___^_^___line
+  sam-base #magic___^_^___line Sample SAM Template for sam-base #magic___^_^___line
 Globals:
   Function:
     Timeout: 3
@@ -21,11 +21,12 @@ Parameters:
     Default: Table_1
     Description: "Name of the DynamoDB table"
 
+
 Resources:
   baseFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub "sam-base-ms-baseFunction-${stage}"
+      FunctionName: !Sub "sam-base-baseFunction-${stage}"
       CodeUri: src/controllers
       Environment:
         Variables:
@@ -59,7 +60,7 @@ Resources:
   createItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub "sam-base-ms-createItem-${stage}"
+      FunctionName: !Sub "sam-base-createItem-${stage}"
       CodeUri: src/controllers
       Environment:
         Variables:
@@ -147,23 +148,17 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref stage
-      Name: !Sub "sam-base-ms-${stage}"
-      TracingEnabled: true
-      Auth:
-        ApiKeyRequired: false # Ajuste para deshabilitar la necesidad de API Key
+      Name: !Sub "sam-base-${stage}"
+      MethodSettings:
+      - HttpMethod: "GET"
+        ResourcePath: "/base"
+        ThrottlingRateLimit: 10
+        ThrottlingBurstLimit: 20
+      - HttpMethod: "POST"
+        ResourcePath: "/item"
+        ThrottlingRateLimit: 10
+        ThrottlingBurstLimit: 20
 
-  MyUsagePlan:
-    Type: AWS::ApiGateway::UsagePlan
-    Properties:
-      ApiStages:
-      - ApiId: !Ref MyApiGateway
-        Stage: !Ref stage
-      Throttle:
-        BurstLimit: 200 # Límite de solicitudes instantáneas
-        RateLimit: 100 # Límite de solicitudes por segundo
-      Quota:
-        Limit: 10000 # Límite de solicitudes por mes
-        Period: MONTH
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
