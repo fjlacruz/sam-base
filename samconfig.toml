@@ -3,7 +3,7 @@ version = 0.1
 # Configuración por defecto (default)
 [default]
 [default.global.parameters]
-stack_name = "sam-base"
+stack_name = "sam-base-ms"
 
 [default.build.parameters]
 cached = true
@@ -16,7 +16,7 @@ lint = true
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
-s3_prefix = "sam-base"
+s3_prefix = "sam-base-ms"
 region = "us-east-1"
 parameter_overrides = "stage=\"LOCAL\" tableName=\"localTable\""
 image_repositories = []
@@ -39,9 +39,9 @@ warm_containers = "EAGER"
 ##########################################
 [dev]
 [dev.deploy.parameters]
-stack_name = "sam-base-dev"
+stack_name = "sam-base-ms-dev"
 resolve_s3 = true
-s3_prefix = "sam-base-bucket-DEV"
+s3_prefix = "sam-base-ms-bucket-DEV"
 capabilities = "CAPABILITY_IAM"
 region = "us-east-1"
 parameter_overrides = "stage=\"DEV\" tableName=\"devTable\""
@@ -52,9 +52,9 @@ parameter_overrides = "stage=\"DEV\" tableName=\"devTable\""
 ##########################################
 [qa]
 [QA.deploy.parameters]
-stack_name = "sam-base-QA"
+stack_name = "sam-base-ms-QA"
 resolve_s3 = true
-s3_prefix = "sam-base-bucket-QA"
+s3_prefix = "sam-base-ms-bucket-QA"
 capabilities = "CAPABILITY_IAM"
 region = "us-east-1"
 parameter_overrides = "stage=\"QA\" tableName=\"QATable\""
@@ -65,9 +65,9 @@ parameter_overrides = "stage=\"QA\" tableName=\"QATable\""
 ##########################################
 [prod]
 [prod.deploy.parameters]
-stack_name = "sam-base-prod"
+stack_name = "sam-base-ms-prod"
 resolve_s3 = true
-s3_prefix = "sam-base-bucket-PROD"
+s3_prefix = "sam-base-ms-bucket-PROD"
 capabilities = "CAPABILITY_IAM"
 region = "us-east-1"
 parameter_overrides = "stage=\"PROD\" tableName=\"prodTable\""

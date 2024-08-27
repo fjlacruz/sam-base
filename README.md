@@ -1,4 +1,4 @@
-# sam-base
+# sam-base-ms
 
 This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. It includes the following files and folders.
 
@@ -56,7 +56,7 @@ You can find your API Gateway Endpoint URL in the output values displayed after 
 Build your application with the `sam build` command.
 
 ```bash
-sam-base$ sam build
+sam-base-ms$ sam build
 ```
 
 The SAM CLI installs dependencies defined in `src/package.json`, compiles TypeScript with esbuild, creates a deployment package, and saves it in the `.aws-sam/build` folder.
@@ -66,14 +66,14 @@ Test a single function by invoking it directly with a test event. An event is a 
 Run functions locally and invoke them with the `sam local invoke` command.
 
 ```bash
-sam-base$ sam local invoke baseFunction --event events/event.json
+sam-base-ms$ sam local invoke baseFunction --event events/event.json
 ```
 
 The SAM CLI can also emulate your application's API. Use the `sam local start-api` to run the API locally on port 3000.
 
 ```bash
-sam-base$ sam local start-api
-sam-base$ curl http://localhost:3000/
+sam-base-ms$ sam local start-api
+sam-base-ms$ curl http://localhost:3000/
 ```
 
 The SAM CLI reads the application template to determine the API's routes and the functions that they invoke. The `Events` property on each function's definition includes the route and method for each path.
@@ -97,7 +97,7 @@ To simplify troubleshooting, SAM CLI has a command called `sam logs`. `sam logs`
 `NOTE`: This command works for all AWS Lambda functions; not just the ones you deploy using SAM.
 
 ```bash
-sam-base$ sam logs -n baseFunction --stack-name sam-base --tail
+sam-base-ms$ sam logs -n baseFunction --stack-name sam-base-ms --tail
 ```
 
 You can find more information and examples about filtering Lambda function logs in the [SAM CLI Documentation](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-logging.html).
@@ -107,7 +107,7 @@ You can find more information and examples about filtering Lambda function logs 
 Tests are defined in the `src/tests` folder in this project. Use NPM to install the [Jest test framework](https://jestjs.io/) and run unit tests.
 
 ```bash
-sam-base$ cd src
+sam-base-ms$ cd src
 src$ npm install
 src$ npm run test
 ```
@@ -117,7 +117,7 @@ src$ npm run test
 To delete the sample application that you created, use the AWS CLI. Assuming you used your project name for the stack name, you can run the following:
 
 ```bash
-sam delete --stack-name sam-base
+sam delete --stack-name sam-base-ms
 ```
 
 ## Resources
