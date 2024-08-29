@@ -80,10 +80,17 @@ jobs:
       - run: npm install -g esbuild 
       - run: sam build 
       - run: sam deploy --config-env dev --no-confirm-changeset --no-fail-on-empty-changeset
-      # Actualizar la tabla de DynamoDB con réplicas
       - name: Update DynamoDB table replicas
         run: |
-          aws dynamodb update-table \
-            --table-name devTable \
-            --region us-east-1 \
-            --replica-updates '[{"Create":{"RegionName":"sa-east-1"}}]'
+          # Verificar si la réplica ya existe
+          existing_replicas=$(aws dynamodb describe-table --table-name devTable --region us-east-1 --query Table.Replicas[].RegionName --output text)
+          
+          if [[ ! $existing_replicas =~ sa-east-1 ]]; then
+            echo "La réplica en sa-east-1 no existe, creándola..."
+            aws dynamodb update-table \
+              --table-name devTable \
+              --region us-east-1 \
+              --replica-updates '[{"Create":{"RegionName":"sa-east-1"}}]'
+          else
+            echo "La réplica en sa-east-1 ya existe, no se creará."
+          fi
