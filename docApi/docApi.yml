@@ -1,0 +1,78 @@
+openapi: 3.0.1
+info:
+  title: sam-base API
+  description: OpenAPI documentation for sam-base API
+  version: 1.0.0
+servers:
+- url: https://b3rmzanwm8.execute-api.us-east-1.amazonaws.com/DEV
+  variables:
+    MyApiGateway:
+      default: MyApiGateway
+    AWS::Region:
+      default: us-east-1
+    stage:
+      default: DEV
+paths:
+  /base:
+    get:
+      summary: Get all base items
+      operationId: getBase
+      x-amazon-apigateway-integration:
+        uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:637423314293:function:sam-base-baseFunction-DEV/invocations
+        httpMethod: POST
+        type: aws_proxy
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        required: false
+  /item:
+    post:
+      summary: Create an item
+      operationId: createItem
+      x-amazon-apigateway-integration:
+        uri: arn:aws:apigateway:{AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:{AWS::Region}:{AWS::AccountId}:function:sam-base-createItem-${stage}/invocations
+        httpMethod: POST
+        type: aws_proxy
+      requestBody:
+        description: Item to create
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                itemId:
+                  type: string
+                itemName:
+                  type: string
+        required: true
+      responses:
+        '200':
+          description: Item created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Bad request
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+security:
+- ApiKeyAuth: []
