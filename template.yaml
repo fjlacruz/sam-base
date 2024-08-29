@@ -118,6 +118,8 @@ Resources:
       - AttributeName: "SK"
         KeyType: "RANGE"
       BillingMode: "PAY_PER_REQUEST"
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
       GlobalSecondaryIndexes:
       - IndexName: 'GSI1'
         KeySchema:
@@ -143,6 +145,9 @@ Resources:
           KeyType: "RANGE"
         Projection:
           ProjectionType: ALL
+
+  #comando para la tablas globales de replica
+  # aws dynamodb update-table     --table-name devTable     --region us-east-1     --replica-updates '[{"Create":{"RegionName":"sa-east-1"}}]'
 
   MyApiGateway:
     Type: AWS::Serverless::Api
