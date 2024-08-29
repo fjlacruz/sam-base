@@ -1,6 +1,7 @@
-import  { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { DynamoDBProductRepository } from '../adapters/DynamoDBProductRepository';
-import  { Product } from '../domain/Product';
+import { Product } from '../domain/Product';
+import { addCorsHeaders } from '../util/cors';
 
 const productRepository = new DynamoDBProductRepository();
 
@@ -17,32 +18,22 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
     try {
         const products: Product[] = await productRepository.getAll();
 
-        return {
+        return addCorsHeaders({
             statusCode: 200,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Amz-Date, X-Api-Key',
-            },
             body: JSON.stringify({
                 message: 'Items retrieved successfully',
                 data: products,
             }),
-        };
+        });
     } catch (error) {
         console.error('Error scanning DynamoDB table:', error);
 
-        return {
+        return addCorsHeaders({
             statusCode: 500,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Amz-Date, X-Api-Key',
-            },
             body: JSON.stringify({
                 message: 'Error retrieving items from DynamoDB',
                 error: error,
             }),
-        };
+        });
     }
 };
