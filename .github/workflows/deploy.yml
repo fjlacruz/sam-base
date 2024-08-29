@@ -80,3 +80,10 @@ jobs:
       - run: npm install -g esbuild 
       - run: sam build 
       - run: sam deploy --config-env dev --no-confirm-changeset --no-fail-on-empty-changeset
+      # Actualizar la tabla de DynamoDB con réplicas
+      - name: Update DynamoDB table replicas
+        run: |
+          aws dynamodb update-table \
+            --table-name devTable \
+            --region us-east-1 \
+            --replica-updates '[{"Create":{"RegionName":"sa-east-1"}}]'
